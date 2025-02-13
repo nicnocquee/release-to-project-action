@@ -12,14 +12,14 @@ This GitHub Action processes release notes to update GitHub Project items based 
 
 ## Requirements
 
-- The action requires a GitHub token with `repo` and `project` permissions
+- The action requires a GitHub token with `repo` and `project` permissions. If the project to update is an organization project, you also need `admin:org` permission.
 - Pull requests must be linked to issues
 - Issues must be added to the specified GitHub Project
 - The project must have a status field with the specified options
 
 ## Usage
 
-1. Add a GitHub secret named `MY_GITHUB_TOKEN` with the value of your GitHub Personal Access Token with `repo` and `project` permissions.
+1. Add a GitHub secret in your repository named `MY_GITHUB_TOKEN` with the value of your GitHub Personal Access Token with `repo` and `project` permissions.
 2. Add a new workflow file to your repository, e.g., `.github/workflows/release-to-project.yml` with the following content:
 
 ```yaml
