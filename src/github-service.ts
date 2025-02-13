@@ -92,7 +92,7 @@ export class GitHubService {
 
     const response = await this.octokit.graphql<ProjectQueryResponse>(query, {
       owner: organization || this.owner,
-      number: projectNumber,
+      number: projectNumber
     });
 
     const project = response[organization ? "organization" : "user"]?.projectV2;
@@ -106,8 +106,8 @@ export class GitHubService {
       fields: project.fields.nodes.map((node) => ({
         id: node.id,
         name: node.name,
-        settings: "options" in node ? { options: node.options } : undefined,
-      })),
+        settings: "options" in node ? { options: node.options } : undefined
+      }))
     };
   }
 
@@ -132,14 +132,14 @@ export class GitHubService {
       {
         owner: this.owner,
         repo: this.repo,
-        pullNumber,
+        pullNumber
       }
     );
 
     return response.repository.pullRequest.closingIssuesReferences.nodes.map(
       (node) => ({
         number: node.number,
-        nodeId: node.id,
+        nodeId: node.id
       })
     );
   }
@@ -179,7 +179,7 @@ export class GitHubService {
         };
       };
     }>(query, {
-      projectId,
+      projectId
     });
 
     const items = response.node.items.nodes;
@@ -240,7 +240,7 @@ export class GitHubService {
       projectId,
       itemId: projectItemId,
       fieldId: statusField.id,
-      optionId: option.id,
+      optionId: option.id
     });
   }
 
@@ -270,7 +270,7 @@ export class GitHubService {
     const response = await this.octokit.graphql(query, {
       owner,
       repo,
-      tag,
+      tag
     });
 
     interface GraphQLResponse {

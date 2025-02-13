@@ -29961,7 +29961,7 @@ class GitHubService {
     `;
         const response = await this.octokit.graphql(query, {
             owner: organization || this.owner,
-            number: projectNumber,
+            number: projectNumber
         });
         const project = response[organization ? "organization" : "user"]?.projectV2;
         if (!project) {
@@ -29973,8 +29973,8 @@ class GitHubService {
             fields: project.fields.nodes.map((node) => ({
                 id: node.id,
                 name: node.name,
-                settings: "options" in node ? { options: node.options } : undefined,
-            })),
+                settings: "options" in node ? { options: node.options } : undefined
+            }))
         };
     }
     async getLinkedIssues(pullNumber) {
@@ -29995,11 +29995,11 @@ class GitHubService {
         const response = await this.octokit.graphql(query, {
             owner: this.owner,
             repo: this.repo,
-            pullNumber,
+            pullNumber
         });
         return response.repository.pullRequest.closingIssuesReferences.nodes.map((node) => ({
             number: node.number,
-            nodeId: node.id,
+            nodeId: node.id
         }));
     }
     async getProjectItemForIssue(projectId, issueNodeId) {
@@ -30022,7 +30022,7 @@ class GitHubService {
       }
     `;
         const response = await this.octokit.graphql(query, {
-            projectId,
+            projectId
         });
         const items = response.node.items.nodes;
         const projectItem = items.find((item) => item.content?.id === issueNodeId);
@@ -30062,7 +30062,7 @@ class GitHubService {
             projectId,
             itemId: projectItemId,
             fieldId: statusField.id,
-            optionId: option.id,
+            optionId: option.id
         });
     }
     async getReleaseFromUrl(releaseUrl) {
@@ -30086,7 +30086,7 @@ class GitHubService {
         const response = await this.octokit.graphql(query, {
             owner,
             repo,
-            tag,
+            tag
         });
         const typedResponse = response;
         if (!typedResponse.repository.release?.description) {
@@ -30227,7 +30227,7 @@ class ReleaseParser {
             pullRequests.push({
                 author: match[1],
                 number: parseInt(match[2], 10),
-                url: match[0].split(" in ")[1],
+                url: match[0].split(" in ")[1]
             });
         }
         return pullRequests;

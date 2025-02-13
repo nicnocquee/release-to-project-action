@@ -10,6 +10,7 @@
     "test:coverage": "jest --coverage",
     "lint": "eslint src/**/*.ts",
     "format": "prettier --write **/*.ts",
+    "check:format": "prettier --check **/*.ts",
     "test:local": "tsx scripts/test-local.ts",
     "prepare": "husky install && npm run build",
     "release": "./scripts/create-release.sh"
@@ -38,7 +39,7 @@
     "eslint-plugin-jest": "^28.11.0",
     "husky": "^9.1.7",
     "jest": "^29.7.0",
-    "prettier": "^3.5.0",
+    "prettier": "^3.5.1",
     "ts-jest": "^29.2.5",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3"

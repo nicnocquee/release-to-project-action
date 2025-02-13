@@ -26,7 +26,7 @@ async function testLocal() {
           ## What's Changed
           * test change 1 by @person1 in ${process.env.TEST_LOCAL_PULL_REQUEST_1}
           * test change 2 by @person2 in ${process.env.TEST_LOCAL_PULL_REQUEST_2}
-  `,
+  `
     };
 
     if (
@@ -42,7 +42,7 @@ async function testLocal() {
     console.log("Starting local test...");
     console.log("Configuration:", {
       ...config,
-      token: "***", // Hide token in logs
+      token: "***" // Hide token in logs
     });
 
     // Initialize services

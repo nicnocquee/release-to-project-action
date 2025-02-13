@@ -11,7 +11,7 @@ export class ReleaseParser {
       pullRequests.push({
         author: match[1],
         number: parseInt(match[2], 10),
-        url: match[0].split(" in ")[1],
+        url: match[0].split(" in ")[1]
       });
     }
 
