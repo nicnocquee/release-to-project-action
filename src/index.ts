@@ -3,7 +3,7 @@ import * as github from "@actions/github";
 import { ReleaseParser } from "./release-parser";
 import { GitHubService } from "./github-service";
 
-async function run(): Promise<void> {
+export async function run(): Promise<void> {
   try {
     // Get inputs
     const token = core.getInput("github-token", { required: true });
@@ -11,19 +11,34 @@ async function run(): Promise<void> {
     const organization = core.getInput("organization");
     const statusFieldName = core.getInput("status-field-name") || "Status";
     const targetStatus = core.getInput("target-status") || "Done";
+    const releaseUrl = core.getInput("release-url");
+    const releaseNotesInput = core.getInput("release-notes");
 
     // Get context
     const { owner, repo } = github.context.repo;
-    const releaseNotes = github.context.payload.release?.body;
-
-    if (!releaseNotes) {
-      throw new Error("No release notes found in the event payload");
-    }
-
     // Initialize services
     const githubService = new GitHubService(token, owner, repo);
 
+    // Get release notes content
+    let releaseNotes: string;
+
+    if (releaseUrl) {
+      core.info("Getting release notes from URL...");
+      releaseNotes = await githubService.getReleaseFromUrl(releaseUrl);
+    } else if (releaseNotesInput) {
+      core.info("Using provided release notes...");
+      releaseNotes = releaseNotesInput;
+    } else if (github.context.payload.release?.body) {
+      core.info("Using release notes from event payload...");
+      releaseNotes = github.context.payload.release.body;
+    } else {
+      throw new Error(
+        "No release notes provided. Please provide either release-url, release-notes, or trigger with a release event."
+      );
+    }
+
     // Get project details
+    core.info("Getting project details...");
     const project = await githubService.getProjectDetails(
       projectNumber,
       organization

@@ -1,10 +1,10 @@
 {
   "name": "release-to-project-action",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "GitHub Action to update project items based on release notes",
   "main": "dist/index.js",
   "scripts": {
-    "build": "ncc build src/index.ts -o dist --source-map --license licenses.txt",
+    "build": "ncc build src/index.ts -o dist --source-map --license LICENSE",
     "test": "jest",
     "test:watch": "jest --watchAll",
     "test:coverage": "jest --coverage",
@@ -18,7 +18,7 @@
     "release",
     "project"
   ],
-  "author": "Your Name",
+  "author": "Nico Prananta",
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.11.1",

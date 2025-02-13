@@ -21,7 +21,13 @@ inputs:
   target-status:
     description: "Status to set for the project items"
     required: true
-    default: "Deployed to Staging"
+    default: "Deployed to Production"
+  release-url:
+    description: "GitHub release URL (alternative to using release event)"
+    required: false
+  release-notes:
+    description: "Release notes content (alternative to using release URL or release event)"
+    required: false
 
 runs:
   using: "node20"

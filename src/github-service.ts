@@ -243,4 +243,40 @@ export class GitHubService {
       optionId: option.id,
     });
   }
+
+  async getReleaseFromUrl(releaseUrl: string): Promise<string> {
+    // Extract owner, repo, and tag from URL
+    // Example URL: https://github.com/owner/repo/releases/tag/v1.0.0
+    const urlPattern =
+      /https:\/\/github\.com\/([^\/]+)\/([^\/]+)\/releases\/tag\/([^\/]+)/;
+    const match = releaseUrl.match(urlPattern);
+
+    if (!match) {
+      throw new Error("Invalid release URL format");
+    }
+
+    const [, owner, repo, tag] = match;
+
+    const query = `
+      query($owner: String!, $repo: String!, $tag: String!) {
+        repository(owner: $owner, name: $repo) {
+          release(tagName: $tag) {
+            body
+          }
+        }
+      }
+    `;
+
+    const response = (await this.octokit.graphql(query, {
+      owner,
+      repo,
+      tag,
+    })) as { repository: { release: { body: string | null } | null } };
+
+    if (!response.repository.release?.body) {
+      throw new Error("Release not found or has no content");
+    }
+
+    return response.repository.release.body;
+  }
 }

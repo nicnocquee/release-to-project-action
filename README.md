@@ -28,7 +28,14 @@ name: Process Release
 on:
   release:
     types: [published]
-
+  workflow_dispatch:
+    inputs:
+      releaseUrl:
+        description: "GitHub release URL"
+        required: false
+      releaseNotes:
+        description: "Release notes content"
+        required: false
 jobs:
   update-project:
     runs-on: ubuntu-latest
@@ -40,7 +47,11 @@ jobs:
           organization: my-org # Optional, remove for user projects
           status-field-name: "Status" # Optional, default is "Status"
           target-status: "Deployed to Production" # Optional, default is "Done"
+          release-url: ${{ inputs.releaseUrl }}
+          release-notes: ${{ inputs.releaseNotes }}
 ```
+
+The `workflow_dispatch` event is used to trigger the action manually. In this case, you can provide the `release-url` or `release-notes` inputs to process the release notes from a URL or a release event. This is useful for testing the action without creating a new release.
 
 ## Inputs
 

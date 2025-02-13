@@ -21,6 +21,55 @@ describe("GitHubService", () => {
     service = new GitHubService(mockToken, mockOwner, mockRepo);
   });
 
+  describe("getReleaseFromUrl", () => {
+    it("should fetch release notes from valid URL", async () => {
+      const releaseUrl = "https://github.com/owner/repo/releases/tag/v1.0.0";
+      const expectedReleaseNotes = "## What's Changed\n* test change";
+
+      mockGraphql.mockResolvedValueOnce({
+        repository: {
+          release: {
+            body: expectedReleaseNotes,
+          },
+        },
+      });
+
+      const result = await service.getReleaseFromUrl(releaseUrl);
+
+      expect(result).toBe(expectedReleaseNotes);
+      expect(mockGraphql).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          owner: "owner",
+          repo: "repo",
+          tag: "v1.0.0",
+        })
+      );
+    });
+
+    it("should throw error for invalid URL format", async () => {
+      const invalidUrl = "https://github.com/invalid-url";
+
+      await expect(service.getReleaseFromUrl(invalidUrl)).rejects.toThrow(
+        "Invalid release URL format"
+      );
+    });
+
+    it("should throw error when release not found", async () => {
+      const releaseUrl = "https://github.com/owner/repo/releases/tag/v1.0.0";
+
+      mockGraphql.mockResolvedValueOnce({
+        repository: {
+          release: null,
+        },
+      });
+
+      await expect(service.getReleaseFromUrl(releaseUrl)).rejects.toThrow(
+        "Release not found or has no content"
+      );
+    });
+  });
+
   describe("getProjectDetails", () => {
     it("should fetch project details successfully", async () => {
       const mockResponse = {
