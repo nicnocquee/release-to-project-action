@@ -246,7 +246,6 @@ export class GitHubService {
 
   async getReleaseFromUrl(releaseUrl: string): Promise<string> {
     // Extract owner, repo, and tag from URL
-    // Example URL: https://github.com/owner/repo/releases/tag/v1.0.0
     const urlPattern =
       /https:\/\/github\.com\/([^\/]+)\/([^\/]+)\/releases\/tag\/([^\/]+)/;
     const match = releaseUrl.match(urlPattern);
@@ -261,22 +260,34 @@ export class GitHubService {
       query($owner: String!, $repo: String!, $tag: String!) {
         repository(owner: $owner, name: $repo) {
           release(tagName: $tag) {
-            body
+            descriptionHTML
+            description
           }
         }
       }
     `;
 
-    const response = (await this.octokit.graphql(query, {
+    const response = await this.octokit.graphql(query, {
       owner,
       repo,
       tag,
-    })) as { repository: { release: { body: string | null } | null } };
+    });
 
-    if (!response.repository.release?.body) {
+    interface GraphQLResponse {
+      repository: {
+        release?: {
+          description: string;
+          descriptionHTML: string;
+        };
+      };
+    }
+
+    const typedResponse = response as GraphQLResponse;
+
+    if (!typedResponse.repository.release?.description) {
       throw new Error("Release not found or has no content");
     }
 
-    return response.repository.release.body;
+    return typedResponse.repository.release.description;
   }
 }
