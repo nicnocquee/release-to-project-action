@@ -1,0 +1,70 @@
+name: Update Major Version Tag
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  update-major-version:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Update major version tag
+        id: update-tag
+        run: |
+          NEW_TAG="${{ github.event.release.tag_name }}"
+          echo "New release tag: $NEW_TAG"
+
+          if [[ $NEW_TAG =~ ^v([0-9]+)\. ]]; then
+            MAJOR_VERSION="v${BASH_REMATCH[1]}"
+            echo "major_version=$MAJOR_VERSION" >> $GITHUB_OUTPUT
+            
+            git config user.name "GitHub Actions"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            
+            if git rev-parse "$MAJOR_VERSION" >/dev/null 2>&1; then
+              OLD_VERSION=$(git describe --tags $(git rev-parse $MAJOR_VERSION))
+              echo "old_version=$OLD_VERSION" >> $GITHUB_OUTPUT
+              echo "Updating $MAJOR_VERSION from $OLD_VERSION to $NEW_TAG"
+              git tag -d "$MAJOR_VERSION"
+              git push origin ":refs/tags/$MAJOR_VERSION"
+            else
+              echo "Creating new major version tag $MAJOR_VERSION"
+            fi
+            
+            git tag -a "$MAJOR_VERSION" -m "Update $MAJOR_VERSION to ${NEW_TAG}" "${NEW_TAG}"
+            git push origin "$MAJOR_VERSION"
+          else
+            echo "Error: Invalid tag format"
+            exit 1
+          fi
+
+      - name: Create or update major version release
+        if: steps.update-tag.outputs.major_version != ''
+        env:
+          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+        run: |
+          MAJOR_VERSION="${{ steps.update-tag.outputs.major_version }}"
+          NEW_TAG="${{ github.event.release.tag_name }}"
+
+          # Create or update the major version release
+          gh release view "$MAJOR_VERSION" >/dev/null 2>&1 && \
+            gh release delete "$MAJOR_VERSION" -y || true
+
+          gh release create "$MAJOR_VERSION" \
+            --title "Latest $MAJOR_VERSION Release" \
+            --notes "This is an automatic release that tracks the latest ${MAJOR_VERSION}.x.x release.
+
+          Current version: ${NEW_TAG}
+
+          See the [${NEW_TAG} release notes](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/tag/${NEW_TAG}) for details." \
+                      --target $(git rev-parse $NEW_TAG)
+
+      - name: Notify on success
+        run: |
+          echo "Successfully updated ${{ steps.update-tag.outputs.major_version }} to point to ${{ github.event.release.tag_name }}"
