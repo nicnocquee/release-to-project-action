@@ -247,7 +247,7 @@ export class GitHubService {
   async getReleaseFromUrl(releaseUrl: string): Promise<string> {
     // Extract owner, repo, and tag from URL
     const urlPattern =
-      /https:\/\/github\.com\/([^\/]+)\/([^\/]+)\/releases\/tag\/([^\/]+)/;
+      /https:\/\/github\.com\/([^/]+)\/([^/]+)\/releases\/tag\/([^/]+)/;
     const match = releaseUrl.match(urlPattern);
 
     if (!match) {

@@ -30067,7 +30067,7 @@ class GitHubService {
     }
     async getReleaseFromUrl(releaseUrl) {
         // Extract owner, repo, and tag from URL
-        const urlPattern = /https:\/\/github\.com\/([^\/]+)\/([^\/]+)\/releases\/tag\/([^\/]+)/;
+        const urlPattern = /https:\/\/github\.com\/([^/]+)\/([^/]+)\/releases\/tag\/([^/]+)/;
         const match = releaseUrl.match(urlPattern);
         if (!match) {
             throw new Error("Invalid release URL format");
@@ -30221,7 +30221,7 @@ exports.ReleaseParser = void 0;
 class ReleaseParser {
     static extractPullRequests(releaseNotes) {
         const pullRequests = [];
-        const prRegex = /\* .+ by @([^\s]+) in https:\/\/github\.com\/[^\/]+\/[^\/]+\/pull\/(\d+)/g;
+        const prRegex = /\* .+ by @([^\s]+) in https:\/\/github\.com\/[^/]+\/[^/]+\/pull\/(\d+)/g;
         let match;
         while ((match = prRegex.exec(releaseNotes)) !== null) {
             pullRequests.push({

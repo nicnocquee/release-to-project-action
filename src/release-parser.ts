@@ -4,7 +4,7 @@ export class ReleaseParser {
   public static extractPullRequests(releaseNotes: string): PullRequest[] {
     const pullRequests: PullRequest[] = [];
     const prRegex =
-      /\* .+ by @([^\s]+) in https:\/\/github\.com\/[^\/]+\/[^\/]+\/pull\/(\d+)/g;
+      /\* .+ by @([^\s]+) in https:\/\/github\.com\/[^/]+\/[^/]+\/pull\/(\d+)/g;
 
     let match;
     while ((match = prRegex.exec(releaseNotes)) !== null) {
