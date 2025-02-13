@@ -1,0 +1,38 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version number (optional, will auto-increment patch if empty)"
+        required: false
+        type: string
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # For creating releases and pushing tags
+      pull-requests: write # For creating PRs if needed
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Important for getting all tags
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run create-release script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AUTO_CONFIRM: "true" # Skip confirmation prompt
+        run: |
+          chmod +x ./scripts/create-release.sh
+          ./scripts/create-release.sh ${{ inputs.version }}

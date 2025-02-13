@@ -65,6 +65,8 @@ The `workflow_dispatch` event is used to trigger the action manually. In this ca
 
 ## Development
 
+### Testing Locally
+
 To check the action works as expected locally, we need to create a test project in GitHub, add two issues in the "In Progress" column in the project, then run the test-local script to simulate a release event that contains the pull requests that are connected to the issues.
 
 First, create a `.env` file based on the `env.example` file and set the required environment variables.
@@ -97,6 +99,19 @@ npm run test:local
 ```
 
 Once successful, the two items in the "In Progress" column will be moved to "Done" in the project.
+
+### Creating a Release
+
+To create a new release, you can use the `create-release.sh` script in the `scripts` directory. This script will automatically increment the patch version of the latest release tag and create a draft release with the specified version number. You can optionally provide a version number as an argument to the script. It will also run the `build` script and commit the changes to the `dist` directory.
+
+To create a release, run the following command:
+
+```bash
+npm run release
+
+# Specific version
+npm run release 1.0.3
+```
 
 ## License
 

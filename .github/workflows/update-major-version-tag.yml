@@ -1,8 +1,7 @@
 name: Update Major Version Tag
 
 on:
-  release:
-    types: [published]
+  workflow_dispatch:
 
 jobs:
   update-major-version:
