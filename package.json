@@ -1,6 +1,6 @@
 {
   "name": "release-to-project-action",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "GitHub Action to update project items based on release notes",
   "main": "dist/index.js",
   "scripts": {

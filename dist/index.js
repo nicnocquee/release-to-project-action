@@ -30067,7 +30067,6 @@ class GitHubService {
     }
     async getReleaseFromUrl(releaseUrl) {
         // Extract owner, repo, and tag from URL
-        // Example URL: https://github.com/owner/repo/releases/tag/v1.0.0
         const urlPattern = /https:\/\/github\.com\/([^\/]+)\/([^\/]+)\/releases\/tag\/([^\/]+)/;
         const match = releaseUrl.match(urlPattern);
         if (!match) {
@@ -30078,20 +30077,22 @@ class GitHubService {
       query($owner: String!, $repo: String!, $tag: String!) {
         repository(owner: $owner, name: $repo) {
           release(tagName: $tag) {
-            body
+            descriptionHTML
+            description
           }
         }
       }
     `;
-        const response = (await this.octokit.graphql(query, {
+        const response = await this.octokit.graphql(query, {
             owner,
             repo,
             tag,
-        }));
-        if (!response.repository.release?.body) {
+        });
+        const typedResponse = response;
+        if (!typedResponse.repository.release?.description) {
             throw new Error("Release not found or has no content");
         }
-        return response.repository.release.body;
+        return typedResponse.repository.release.description;
     }
 }
 exports.GitHubService = GitHubService;
