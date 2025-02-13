@@ -43,28 +43,3 @@ jobs:
             echo "Error: Invalid tag format"
             exit 1
           fi
-
-      - name: Create or update major version release
-        if: steps.update-tag.outputs.major_version != ''
-        env:
-          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
-        run: |
-          MAJOR_VERSION="${{ steps.update-tag.outputs.major_version }}"
-          NEW_TAG="${{ github.event.release.tag_name }}"
-
-          # Create or update the major version release
-          gh release view "$MAJOR_VERSION" >/dev/null 2>&1 && \
-            gh release delete "$MAJOR_VERSION" -y || true
-
-          gh release create "$MAJOR_VERSION" \
-            --title "Latest $MAJOR_VERSION Release" \
-            --notes "This is an automatic release that tracks the latest ${MAJOR_VERSION}.x.x release.
-
-          Current version: ${NEW_TAG}
-
-          See the [${NEW_TAG} release notes](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/tag/${NEW_TAG}) for details." \
-                      --target $(git rev-parse $NEW_TAG)
-
-      - name: Notify on success
-        run: |
-          echo "Successfully updated ${{ steps.update-tag.outputs.major_version }} to point to ${{ github.event.release.tag_name }}"
