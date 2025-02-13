@@ -1,0 +1,38 @@
+# .github/workflows/test-release.yml
+name: Test Release Processing
+
+on:
+  workflow_dispatch:
+    inputs:
+      project-number:
+        description: "GitHub Project number"
+        required: true
+        default: "1"
+      organization:
+        description: "GitHub organization name (if using organization project)"
+        required: false
+      target-status:
+        description: "Status to set for the project items"
+        required: true
+        default: "Deployed to Production"
+      releaseNotes:
+        description: "Test release notes"
+        required: true
+        default: |
+          ## What's Changed
+          * test change 1 by @username in https://github.com/organization/reponame/pull/prnumber
+          * test change 2 by @username in https://github.com/organization/reponame/pull/prnumber
+
+jobs:
+  test-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test Release Action
+        uses: ./
+        with:
+          github-token: ${{ secrets.MY_GITHUB_TOKEN }}
+          project-number: ${{ inputs.project-number }}
+          organization: ${{ inputs.organization }} # Optional
+          status-field-name: "Status"
+          target-status: ${{ inputs.target-status }}

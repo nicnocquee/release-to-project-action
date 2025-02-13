@@ -1,0 +1,28 @@
+name: "Release Notes to Project Action"
+description: "Processes release notes to update GitHub Project items based on linked issues and pull requests"
+branding:
+  icon: "git-pull-request"
+  color: "blue"
+
+inputs:
+  github-token:
+    description: "GitHub token with repository and project permissions"
+    required: true
+  project-number:
+    description: "GitHub Project number"
+    required: true
+  organization:
+    description: "GitHub organization name (if using organization project)"
+    required: false
+  status-field-name:
+    description: "Name of the status field in the project"
+    required: true
+    default: "Status"
+  target-status:
+    description: "Status to set for the project items"
+    required: true
+    default: "Deployed to Staging"
+
+runs:
+  using: "node20"
+  main: "dist/index.js"
