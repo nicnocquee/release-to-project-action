@@ -29,7 +29,7 @@ describe("GitHubService", () => {
       mockGraphql.mockResolvedValueOnce({
         repository: {
           release: {
-            body: expectedReleaseNotes,
+            description: expectedReleaseNotes,
           },
         },
       });
